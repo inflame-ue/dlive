@@ -12,9 +12,6 @@ var subscribed_entities = []string{
 	"player_pawn",
 	"team",
 	"mid_boss",
-	"punchable_powerup",
-	"destroyable_building",
-	"sinners_sacrifice",
 }
 
 func main() {
