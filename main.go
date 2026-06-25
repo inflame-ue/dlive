@@ -26,7 +26,7 @@ func main() {
 	log.Printf("establishing connection to API on port %d for match: %d", *port, *matchID)
 	go client.EstablishConnection(true, subscribed_entities)
 
-	for event := range client.Events {
-		log.Printf("%s\n", event)
+	for range client.Events {
+
 	}
 }

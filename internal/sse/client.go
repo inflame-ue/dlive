@@ -9,18 +9,41 @@ import (
 	"strings"
 )
 
+type RawEvent struct {
+	EventType string
+	Data      []byte
+}
+
 type MatchClient struct {
 	port    int
 	matchID int
-	Events  chan []byte
+	Events  chan *RawEvent
 }
 
 func NewMatchClient(deadlockAPIPort, deadlockMatchID int) *MatchClient {
 	return &MatchClient{
 		port:    deadlockAPIPort,
 		matchID: deadlockMatchID,
-		Events:  make(chan []byte),
+		Events:  make(chan *RawEvent),
 	}
+}
+
+func parseEvent(eventString []string) (*RawEvent, error) {
+	if len(eventString) < 2 {
+		return nil, fmt.Errorf("the server-sent event must have two parts: event type and data bytes")
+	}
+
+	eventLine, dataLine := eventString[0], eventString[1]
+	_, eventType, _ := strings.Cut(eventLine, ":")
+	eventType = strings.TrimSpace(eventType)
+	
+	_, data, _ := strings.Cut(dataLine, ":")
+	data = strings.TrimSpace(data)
+
+	return &RawEvent{
+		EventType: eventType,
+		Data:      []byte(data),
+	}, nil
 }
 
 func (mc *MatchClient) EstablishConnection(subscribeChatMessages bool, subscribedEntities []string) {
@@ -30,13 +53,31 @@ func (mc *MatchClient) EstablishConnection(subscribeChatMessages bool, subscribe
 	log.Printf("establishing connection for url %s", url)
 	resp, err := http.Get(url)
 	if err != nil {
-		log.Fatal("establishing connection: %w", err)
+		log.Printf("establishing connection: %v", err)
+		return
 	}
+	defer resp.Body.Close()
 
 	scanner := bufio.NewScanner(resp.Body)
+	eventString := make([]string, 0, 2)
 	for scanner.Scan() {
-		event := scanner.Bytes()
-		log.Printf("scanned event: %s", event)
-		mc.Events <- event
+		if scanner.Text() == "" {
+			event, err := parseEvent(eventString)
+			if err != nil {
+				log.Print(err)
+				continue
+			}
+			log.Printf("Event Type: %s, Event Data: %s", event.EventType, event.Data)
+			mc.Events <- event
+			eventString = nil
+		} else {
+			eventString = append(eventString, scanner.Text())
+		}
+	}
+
+	close(mc.Events)
+	if err := scanner.Err(); err != nil {
+		log.Printf("scanner: %v", err)
+		return
 	}
 }
