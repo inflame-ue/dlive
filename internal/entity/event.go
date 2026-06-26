@@ -1,5 +1,9 @@
 package entity
 
+type Event interface {
+	eventMarker()
+}
+
 type EventType string
 
 const (
@@ -16,6 +20,8 @@ type PlayerControllerEvent struct {
 	PlayerController
 }
 
+func (PlayerControllerEvent) eventMarker() {}
+
 type PlayerPawnEvent struct {
 	Event       EventType `json:"event_type"`
 	Tick        int       `json:"tick"`
@@ -23,6 +29,8 @@ type PlayerPawnEvent struct {
 	EntityIndex int       `json:"entity_index"`
 	PlayerPawn
 }
+
+func (PlayerPawnEvent) eventMarker() {}
 
 type TeamEvent struct {
 	Event       EventType `json:"event_type"`
@@ -32,7 +40,9 @@ type TeamEvent struct {
 	Team
 }
 
-type MidbossEvent struct {
+func (TeamEvent) eventMarker() {}
+
+type MidBossEvent struct {
 	Event       EventType `json:"event_type"`
 	Tick        int       `json:"tick"`
 	GameTime    float64   `json:"game_time"`
@@ -40,13 +50,19 @@ type MidbossEvent struct {
 	MidBoss
 }
 
+func (MidBossEvent) eventMarker() {}
+
 type TickEndEvent struct {
 	Tick     int     `json:"tick"`
 	GameTime float64 `json:"game_time"`
 }
+
+func (TickEndEvent) eventMarker() {}
 
 type ChatMessageEvent struct {
 	Tick     int     `json:"tick"`
 	GameTime float64 `json:"game_time"`
 	ChatMessage
 }
+
+func (ChatMessageEvent) eventMarker() {}
