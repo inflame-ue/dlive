@@ -41,16 +41,23 @@ type PlayerPawn struct {
 }
 
 type Team struct {
-	Team         int     `json:"team"`
-	Score        int     `json:"score"`
-	Teamname     string  `json:"teamname"`
-	FlexUnlocked int     `json:"flex_unlocked"`
+	Team         int    `json:"team"`
+	Score        int    `json:"score"`
+	Teamname     string `json:"teamname"`
+	FlexUnlocked int    `json:"flex_unlocked"`
 }
 
 type MidBoss struct {
-	Health       int       `json:"health"`
-	MaxHealth    int       `json:"max_health"`
-	CreateTime   float64   `json:"create_time"`
-	Team         int       `json:"team"`
-	Position     []float64 `json:"position"`
+	Health     int       `json:"health"`
+	MaxHealth  int       `json:"max_health"`
+	CreateTime float64   `json:"create_time"`
+	Team       int       `json:"team"`
+	Position   []float64 `json:"position"`
+}
+
+type ChatMessage struct {
+	SteamName string `json:"steam_name"`
+	SteamID   int    `json:"steam_id"`
+	Text      string `json:"text"`
+	AllChat   bool   `json:"all_chat"`
 }
