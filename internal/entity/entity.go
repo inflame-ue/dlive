@@ -1,7 +1,7 @@
 package entity
 
 type PlayerController struct {
-	SteamID              int     `json:"steam_id"`
+	SteamID              int64   `json:"steam_id"`
 	SteamName            string  `json:"steam_name"`
 	Team                 int     `json:"team"`
 	HeroID               int     `json:"hero_id"`
@@ -27,7 +27,7 @@ type PlayerController struct {
 
 type PlayerPawn struct {
 	Controller             int       `json:"controller"`
-	Team                   int       `json:"team"`
+	Team                   *int      `json:"team"`
 	HeroID                 int       `json:"hero_id"`
 	HeroBuildID            int       `json:"hero_build_id"`
 	HeroBuildSerialized    []int     `json:"hero_build_serialized"`
@@ -57,7 +57,7 @@ type MidBoss struct {
 
 type ChatMessage struct {
 	SteamName string `json:"steam_name"`
-	SteamID   int    `json:"steam_id"`
+	SteamID   int64  `json:"steam_id"`
 	Text      string `json:"text"`
 	AllChat   bool   `json:"all_chat"`
 }
