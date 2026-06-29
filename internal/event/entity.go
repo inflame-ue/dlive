@@ -1,4 +1,4 @@
-package entity
+package event
 
 type PlayerController struct {
 	SteamID              int64   `json:"steam_id"`
@@ -27,8 +27,8 @@ type PlayerController struct {
 
 type PlayerPawn struct {
 	Controller             int       `json:"controller"`
-	Team                   *int      `json:"team"`
-	HeroID                 int       `json:"hero_id"`
+	Team                   int      `json:"team"`
+	HeroID                 *int       `json:"hero_id"`
 	HeroBuildID            int       `json:"hero_build_id"`
 	HeroBuildSerialized    []int     `json:"hero_build_serialized"`
 	QuickbuyQueue          []int     `json:"quickbuy_queue"`

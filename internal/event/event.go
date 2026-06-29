@@ -1,4 +1,4 @@
-package entity
+package event
 
 type Event interface {
 	eventMarker()
@@ -7,9 +7,13 @@ type Event interface {
 type EventType string
 
 const (
+	Unknown EventType = "unknown"
 	Created EventType = "entity_create"
 	Updated EventType = "entity_update"
 	Deleted EventType = "entity_delete"
+	TickEnd EventType = "tick_end"
+	Message EventType = "chat_message"
+	GameEnd EventType = "end"
 )
 
 type PlayerControllerEvent struct {
@@ -53,16 +57,24 @@ type MidBossEvent struct {
 func (MidBossEvent) eventMarker() {}
 
 type TickEndEvent struct {
-	Tick     int     `json:"tick"`
-	GameTime float64 `json:"game_time"`
+	Event    EventType `json:"event_type"`
+	Tick     int       `json:"tick"`
+	GameTime float64   `json:"game_time"`
 }
 
 func (TickEndEvent) eventMarker() {}
 
 type ChatMessageEvent struct {
-	Tick     int     `json:"tick"`
-	GameTime float64 `json:"game_time"`
+	Event    EventType `json:"event_type"`
+	Tick     int       `json:"tick"`
+	GameTime float64   `json:"game_time"`
 	ChatMessage
 }
 
 func (ChatMessageEvent) eventMarker() {}
+
+type GameEndEvent struct {
+	Event EventType `json:"event_type"`
+}
+
+func (GameEndEvent) eventMarker() {}
