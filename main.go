@@ -4,6 +4,7 @@ import (
 	"flag"
 	"log"
 
+	"github.com/inflame-ue/dlive/internal/event"
 	"github.com/inflame-ue/dlive/internal/sse"
 )
 
@@ -12,9 +13,6 @@ var subscribed_entities = []string{
 	"player_pawn",
 	"team",
 	"mid_boss",
-	"punchable_powerup",
-	"destroyable_building",
-	"sinners_sacrifice",
 }
 
 func main() {
@@ -26,7 +24,10 @@ func main() {
 	log.Printf("establishing connection to API on port %d for match: %d", *port, *matchID)
 	go client.EstablishConnection(true, subscribed_entities)
 
-	for range client.Events {
+	parser := event.NewEventParser(client.Events)
+	go parser.ParseRawEvents()
 
+	for parsedEvent := range parser.ParsedEvents {
+		log.Printf("%#v", parsedEvent)
 	}
 }
